@@ -9,9 +9,18 @@ function Dealers() {
   useEffect(() => {
     const username = localStorage.getItem('username')
     setUser(username)
-    axios.get('http://localhost:8000/api/dealers/')
-      .then(res => setDealers(res.data))
-      .catch(err => console.error(err))
+    axios.get('http://127.0.0.1:8000/api/dealers/')
+      .then(res => {
+        if (Array.isArray(res.data)) {
+          setDealers(res.data)
+        } else {
+          setDealers([])
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        setDealers([])
+      })
   }, [])
 
   return (
@@ -25,8 +34,8 @@ function Dealers() {
             <p>{dealer.city}, {dealer.state}</p>
             <p>{dealer.address}</p>
             <p>{dealer.phone}</p>
-            <Link to={/dealer/}>View Details</Link>
-            {user && <><br /><Link to={/dealer//review}>Review Dealer</Link></>}
+            <Link to={"/dealer/" + dealer.id}>View Details</Link>
+            {user && <><br /><Link to={"/dealer/" + dealer.id + "/review"}>Review Dealer</Link></>}
           </div>
         ))}
       </div>

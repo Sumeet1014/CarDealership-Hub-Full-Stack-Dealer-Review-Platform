@@ -16,6 +16,12 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Production React build output (server/frontend/dist), created by `npm run
+# build`. Django serves dist/index.html as the SPA shell template and collects
+# its assets via WhiteNoise. References are conditional on the directory
+# existing so local `runserver`/`check` work without a frontend build.
+FRONTEND_DIST = BASE_DIR.parent / 'frontend' / 'dist'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
@@ -61,7 +67,7 @@ ROOT_URLCONF = 'dealership.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [str(FRONTEND_DIST)] if FRONTEND_DIST.exists() else [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -144,5 +150,10 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Collect the built React bundle so WhiteNoise can serve it at /static/assets/.
+STATICFILES_DIRS = [str(FRONTEND_DIST)] if FRONTEND_DIST.exists() else []
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Compressed (not Manifest) storage: Vite already content-hashes asset names, so
+# keep the original filenames and just add gzip/brotli. Manifest storage would
+# rename files and break the plain /static/assets/... references in index.html.
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'

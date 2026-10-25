@@ -22,7 +22,7 @@ function DealerReview() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res = await axios.post(http://localhost:8000/api/dealers//reviews/, {
+      await axios.post(http://localhost:8000/api/dealers//reviews/, {
         review_text: reviewText,
         rating: rating,
         user: user

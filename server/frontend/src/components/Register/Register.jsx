@@ -1,4 +1,5 @@
-﻿import React, { useState } from 'react'
+import apiUrl from '../../api'
+import React, { useState } from 'react'
 import axios from 'axios'
 
 function Register() {
@@ -25,7 +26,7 @@ function Register() {
       return
     }
     try {
-      const res = await axios.post('http://localhost:8000/api/register/', form)
+      const res = await axios.post(apiUrl('/api/register/'), form)
       setMessage(res.data.message || 'Registration successful')
     } catch (err) {
       setError(err.response?.data?.error || 'Registration failed')

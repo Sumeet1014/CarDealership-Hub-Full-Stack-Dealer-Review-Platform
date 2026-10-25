@@ -1,4 +1,5 @@
-﻿import React, { useEffect, useState } from 'react'
+import apiUrl from '../../api'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 
@@ -9,7 +10,7 @@ function Dealers() {
   useEffect(() => {
     const username = localStorage.getItem('username')
     setUser(username)
-    axios.get('http://127.0.0.1:8000/api/dealers/')
+    axios.get(apiUrl('/api/dealers/'))
       .then(res => {
         if (Array.isArray(res.data)) {
           setDealers(res.data)

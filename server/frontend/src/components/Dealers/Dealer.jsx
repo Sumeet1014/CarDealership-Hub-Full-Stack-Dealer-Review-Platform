@@ -1,3 +1,4 @@
+import apiUrl from '../../api'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
@@ -8,10 +9,10 @@ function Dealer() {
   const [reviews, setReviews] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/dealers/' + id + '/')
+    axios.get(apiUrl('/api/dealers/' + id + '/'))
       .then(res => setDealer(res.data))
       .catch(err => console.error(err))
-    axios.get('http://localhost:8000/api/dealers/' + id + '/reviews/')
+    axios.get(apiUrl('/api/dealers/' + id + '/reviews/'))
       .then(res => setReviews(res.data))
       .catch(err => console.error(err))
   }, [id])

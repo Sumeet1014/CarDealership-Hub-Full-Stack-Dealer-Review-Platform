@@ -1,4 +1,5 @@
-﻿import React, { useState } from 'react'
+import apiUrl from '../../api'
+import React, { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
@@ -15,7 +16,7 @@ function Login() {
     e.preventDefault()
     setError('')
     try {
-      const res = await axios.post('http://localhost:8000/api/login/', form)
+      const res = await axios.post(apiUrl('/api/login/'), form)
       if (res.data.user) {
         localStorage.setItem('username', res.data.user.username)
         localStorage.setItem('user', JSON.stringify(res.data.user))

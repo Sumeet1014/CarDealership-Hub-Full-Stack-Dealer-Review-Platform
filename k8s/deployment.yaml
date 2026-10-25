@@ -1,0 +1,24 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cars-dealership-deployment
+  labels:
+    app: cars-dealership
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cars-dealership
+  template:
+    metadata:
+      labels:
+        app: cars-dealership
+    spec:
+      containers:
+      - name: cars-dealership
+        image: cars-dealership:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DEBUG
+          value: "True"

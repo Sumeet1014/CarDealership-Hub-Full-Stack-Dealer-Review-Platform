@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
@@ -22,7 +22,7 @@ function DealerReview() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await axios.post(http://localhost:8000/api/dealers//reviews/, {
+      await axios.post('http://localhost:8000/api/dealers/' + id + '/reviews/', {
         review_text: reviewText,
         rating: rating,
         user: user

@@ -47,7 +47,7 @@ function Register() {
           <input name='last_name' placeholder='Last Name' value={form.last_name} onChange={handleChange} style={{ width: '100%', marginBottom: '0.5rem', padding: '0.5rem' }} />
         </div>
         <div>
-          <input name='email' type='email' placeholder='Email' value={form.email} onChange={handleChange} style={{ width: '100%', marginBottom: '0.5rem', padding: '0.5rem' }} />
+          <input name='email' type='email' placeholder='email' value={form.email} onChange={handleChange} style={{ width: '100%', marginBottom: '0.5rem', padding: '0.5rem' }} />
         </div>
         <div>
           <input name='password' type='password' placeholder='Password' value={form.password} onChange={handleChange} style={{ width: '100%', marginBottom: '0.5rem', padding: '0.5rem' }} />

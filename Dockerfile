@@ -19,5 +19,6 @@ RUN npm run build
 WORKDIR /app/server/backend
 
 # Render injects the PORT environment variable at runtime; bind to it directly.
-# migrate and collectstatic are NOT followed by `|| true` so a failure fails the deploy.
-CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn dealership.wsgi:application --bind 0.0.0.0:$PORT"]
+# migrate, seed and collectstatic are NOT followed by `|| true` so a failure
+# fails the deploy instead of silently starting with an uninitialized database.
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py seed_data && python manage.py collectstatic --noinput && gunicorn dealership.wsgi:application --bind 0.0.0.0:$PORT"]

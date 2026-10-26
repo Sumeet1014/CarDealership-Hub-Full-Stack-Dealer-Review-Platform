@@ -1,0 +1,39 @@
+# Version control / editor metadata
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Secrets and local environment files
+.env
+**/.env
+
+# Local databases (must never ship in the image)
+*.sqlite3
+**/*.sqlite3
+**/db.sqlite3
+
+# Python build artefacts
+__pycache__
+**/__pycache__
+*.py[cod]
+**/*.py[cod]
+.venv
+venv
+env
+
+# Node build artefacts (the Dockerfile builds the frontend itself)
+**/node_modules
+**/dist
+**/build
+**/.vite
+
+# Generated Django files
+**/staticfiles
+**/media
+*.log
+
+# Local evidence output
+evidence

@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, get_user, login, logout
 from dealership_app.models import Dealer, Review, CarMake, CarModel
 from dealership_app.serializers import DealerSerializer, ReviewSerializer
 from django.http import JsonResponse
@@ -42,10 +42,12 @@ def get_dealer_reviews(request, id):
     elif request.method == 'POST':
         try:
             dealer = Dealer.objects.get(id=id)
-            username = request.data.get('user') or request.data.get('username')
-            user = User.objects.filter(username=username).first()
+            user = _get_review_user(request)
             if not user:
-                return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {'error': 'Authentication required'},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
             review_text = request.data.get('review_text', '')
             rating = request.data.get('rating', 5)
             # simple sentiment
@@ -63,6 +65,29 @@ def get_dealer_reviews(request, id):
             return Response({'error': 'Dealer not found'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+def _get_review_user(request):
+    """Resolve the review author from the Django session first.
+
+    DRF authentication classes are intentionally empty in settings, so
+    request.user is anonymous even when Django's session is authenticated.
+    Fall back to the username sent by existing clients for compatibility.
+    """
+    django_request = getattr(request, '_request', None)
+    if django_request is not None:
+        session_user = get_user(django_request)
+        if session_user is not None and session_user.is_authenticated:
+            return session_user
+
+    drf_user = getattr(request, 'user', None)
+    if drf_user is not None and drf_user.is_authenticated:
+        return drf_user
+
+    username = request.data.get('user') or request.data.get('username')
+    if username:
+        return User.objects.filter(username=username).first()
+    return None
 
 
 def analyze_text(text):

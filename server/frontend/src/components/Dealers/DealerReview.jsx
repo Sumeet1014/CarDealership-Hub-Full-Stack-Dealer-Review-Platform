@@ -22,16 +22,20 @@ function DealerReview() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!id) {
+      setMessage('Dealer not found')
+      return
+    }
     try {
-      await axios.post(apiUrl('/api/dealers/' + id + '/reviews/'), {
+      await axios.post(apiUrl(`/api/dealers/${id}/reviews/`), {
         review_text: reviewText,
         rating: rating,
         user: user
       })
       setMessage('Review submitted')
-      setTimeout(() => navigate(/dealer/), 1000)
+      setTimeout(() => navigate(`/dealer/${id}`), 1000)
     } catch (err) {
-      setMessage('Error submitting review')
+      setMessage(err.response?.data?.error || 'Error submitting review')
     }
   }
 

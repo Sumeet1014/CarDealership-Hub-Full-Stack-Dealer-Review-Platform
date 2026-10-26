@@ -28,6 +28,37 @@ class APITests(TestCase):
         resp = self.client.get(f'/api/dealers/{self.dealer.id}/reviews/')
         self.assertEqual(resp.status_code, 200)
 
+    def test_create_review_for_authenticated_user(self):
+        self.assertTrue(self.client.login(username='tuser', password='tpass123'))
+        resp = self.client.post(
+            f'/api/dealers/{self.dealer.id}/reviews/',
+            {'review_text': 'Fantastic services', 'rating': 5},
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, 201)
+
+        review = Review.objects.get(id=resp.json()['id'])
+        self.assertEqual(review.dealer, self.dealer)
+        self.assertEqual(review.user, self.user)
+        self.assertEqual(review.review_text, 'Fantastic services')
+        self.assertEqual(review.rating, 5)
+        self.assertEqual(review.sentiment, 'positive')
+
+    def test_create_review_with_username_fallback(self):
+        resp = self.client.post(
+            f'/api/dealers/{self.dealer.id}/reviews/',
+            {'review_text': 'Great service', 'rating': 4, 'user': 'tuser'},
+            content_type='application/json',
+        )
+        self.assertEqual(resp.status_code, 201)
+
+        review = Review.objects.get(id=resp.json()['id'])
+        self.assertEqual(review.user, self.user)
+        self.assertEqual(review.dealer, self.dealer)
+        self.assertEqual(review.review_text, 'Great service')
+        self.assertEqual(review.rating, 4)
+        self.assertEqual(review.sentiment, 'positive')
+
     def test_register(self):
         resp = self.client.post('/api/register/', {'username': 'newuser', 'password': 'newpass123', 'email': 'n@n.com', 'first_name': 'N', 'last_name': 'U'}, content_type='application/json')
         self.assertIn(resp.status_code, [200, 201])
